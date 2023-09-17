@@ -34,6 +34,9 @@ export function html(options: HtmlOptions = {}) {
 			// use anonymous functions here.
 			function htmlHandle({ set }, response) {
 				if (!isHtml(response)) {
+					if (typeof response === 'string') {
+						return new Response(response, set)
+					}
 					return response
 				}
 
