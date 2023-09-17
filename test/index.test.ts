@@ -60,4 +60,23 @@ describe('HTML', () => {
         res = await app.handle(req('/'))
         expect(res.headers.get('Content-type')).toContain('text/html; charset=utf8')
     })
+
+    it('inherits header plain response when using the html plugin', async () => {
+        const app = new Elysia().use(html()).get('/', ({ html, set }) => {
+            set.headers.Server = 'Elysia'
+            return 'Hello'
+        })
+        const res = await app.handle(req('/'))
+        expect(res.headers.get('Server')).toBe('Elysia')
+    })
+
+    it('inherits header plain response not using the html plugin', async () => {
+        const app = new Elysia().get('/', ({ set }) => {
+            set.headers.Server = 'Elysia'
+            return 'Hello'
+        })
+        const res = await app.handle(req('/'))
+        expect(res.headers.get('Server')).toBe('Elysia')
+        expect(res.headers.get('Content-Type')).toBe(null)
+    })
 })
